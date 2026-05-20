@@ -46,7 +46,7 @@ export function newScenario(label = 'Nový scénář'): Scenario {
       publicAcPct: 20,
       dcFastPct: 10,
       homePricePerKwh: 5,
-      fvePricePerKwh: 2,
+      fvePricePerKwh: 0,
       publicAcPricePerKwh: 9,
       dcFastPricePerKwh: 14,
     },
