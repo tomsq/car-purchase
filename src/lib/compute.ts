@@ -5,8 +5,6 @@ import type {
   Scenario,
 } from './types'
 
-const DPH_RATE = 1.21
-
 export function computeOwned(owned: OwnedCar, globals: Globals): CostBreakdown {
   const totalKm = globals.annualKm * globals.horizonYears
   const liters = (totalKm / 100) * owned.consumptionLper100km
@@ -64,10 +62,7 @@ export function computeScenario(s: Scenario, globals: Globals): CostBreakdown {
       ? evEnergyCostPerKm(s) * totalKm
       : phevEnergyCost(s, totalKm)
 
-  const monthly = s.leaseFeeIncludesDph
-    ? s.monthlyLeaseFee
-    : s.monthlyLeaseFee * DPH_RATE
-  const leaseFee = monthly * 12 * years
+  const leaseFee = s.monthlyLeaseFee * 12 * years
 
   const maintenance = s.bundle.maintenance ? 0 : s.unbundled.maintenancePerYear * years
   const insurance = s.bundle.insurance ? 0 : s.unbundled.insurancePerYear * years

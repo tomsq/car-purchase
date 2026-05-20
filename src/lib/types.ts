@@ -48,7 +48,6 @@ export interface Scenario {
   label: string
   vehicleType: VehicleType
   monthlyLeaseFee: number
-  leaseFeeIncludesDph: boolean
   bundle: LeaseBundle
   unbundled: UnbundledCosts
   consumptionKwhPer100km: number

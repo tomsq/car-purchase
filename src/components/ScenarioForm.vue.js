@@ -1,13 +1,10 @@
 import { computed } from 'vue';
+import ChargingMixSlider from './ChargingMixSlider.vue';
 const props = defineProps();
 const emit = defineEmits();
 const hasUnbundled = computed(() => {
     const b = props.modelValue.bundle;
     return !b.insurance || !b.maintenance || !b.tires || !b.roadTax || !b.replacementCar;
-});
-const chargingSumPct = computed(() => {
-    const m = props.modelValue.chargingMix;
-    return m.homePct + m.fvePct + m.publicAcPct + m.dcFastPct;
 });
 function update(key, value) {
     emit('update:modelValue', { ...props.modelValue, [key]: value });
@@ -29,6 +26,9 @@ function updateCharging(key, value) {
         ...props.modelValue,
         chargingMix: { ...props.modelValue.chargingMix, [key]: value },
     });
+}
+function updateChargingMix(mix) {
+    emit('update:modelValue', { ...props.modelValue, chargingMix: mix });
 }
 function updatePhev(key, value) {
     emit('update:modelValue', {
@@ -80,16 +80,9 @@ __VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
     type: "number",
     value: (__VLS_ctx.modelValue.monthlyLeaseFee),
 });
-__VLS_asFunctionalElement(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({
-    ...{ class: "inline" },
+__VLS_asFunctionalElement(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
+    ...{ class: "subnote" },
     ...{ style: {} },
-});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
-    ...{ onChange: (...[$event]) => {
-            __VLS_ctx.update('leaseFeeIncludesDph', $event.target.checked);
-        } },
-    type: "checkbox",
-    checked: (__VLS_ctx.modelValue.leaseFeeIncludesDph),
 });
 __VLS_asFunctionalElement(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({
     ...{ style: {} },
@@ -240,50 +233,31 @@ __VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
     step: "0.1",
     value: (__VLS_ctx.modelValue.consumptionKwhPer100km),
 });
-__VLS_asFunctionalElement(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-    ...{ class: "subnote" },
+__VLS_asFunctionalElement(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({
     ...{ style: {} },
 });
-(__VLS_ctx.chargingSumPct);
-__VLS_asFunctionalElement(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
-    ...{ class: "row cols-4" },
+/** @type {[typeof ChargingMixSlider, ]} */ ;
+// @ts-ignore
+const __VLS_0 = __VLS_asFunctionalComponent(ChargingMixSlider, new ChargingMixSlider({
+    ...{ 'onUpdate:modelValue': {} },
+    modelValue: (__VLS_ctx.modelValue.chargingMix),
+}));
+const __VLS_1 = __VLS_0({
+    ...{ 'onUpdate:modelValue': {} },
+    modelValue: (__VLS_ctx.modelValue.chargingMix),
+}, ...__VLS_functionalComponentArgsRest(__VLS_0));
+let __VLS_3;
+let __VLS_4;
+let __VLS_5;
+const __VLS_6 = {
+    'onUpdate:modelValue': (__VLS_ctx.updateChargingMix)
+};
+var __VLS_2;
+__VLS_asFunctionalElement(__VLS_intrinsicElements.h3, __VLS_intrinsicElements.h3)({
     ...{ style: {} },
-});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
-    ...{ onInput: (...[$event]) => {
-            __VLS_ctx.updateCharging('homePct', +$event.target.value);
-        } },
-    type: "number",
-    value: (__VLS_ctx.modelValue.chargingMix.homePct),
-});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
-    ...{ onInput: (...[$event]) => {
-            __VLS_ctx.updateCharging('fvePct', +$event.target.value);
-        } },
-    type: "number",
-    value: (__VLS_ctx.modelValue.chargingMix.fvePct),
-});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
-    ...{ onInput: (...[$event]) => {
-            __VLS_ctx.updateCharging('publicAcPct', +$event.target.value);
-        } },
-    type: "number",
-    value: (__VLS_ctx.modelValue.chargingMix.publicAcPct),
-});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({});
-__VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
-    ...{ onInput: (...[$event]) => {
-            __VLS_ctx.updateCharging('dcFastPct', +$event.target.value);
-        } },
-    type: "number",
-    value: (__VLS_ctx.modelValue.chargingMix.dcFastPct),
 });
 __VLS_asFunctionalElement(__VLS_intrinsicElements.div, __VLS_intrinsicElements.div)({
     ...{ class: "row cols-4" },
-    ...{ style: {} },
 });
 __VLS_asFunctionalElement(__VLS_intrinsicElements.label, __VLS_intrinsicElements.label)({});
 __VLS_asFunctionalElement(__VLS_intrinsicElements.input)({
@@ -365,7 +339,7 @@ if (__VLS_ctx.modelValue.vehicleType === 'PHEV') {
 /** @type {__VLS_StyleScopedClasses['header-row']} */ ;
 /** @type {__VLS_StyleScopedClasses['row']} */ ;
 /** @type {__VLS_StyleScopedClasses['cols-3']} */ ;
-/** @type {__VLS_StyleScopedClasses['inline']} */ ;
+/** @type {__VLS_StyleScopedClasses['subnote']} */ ;
 /** @type {__VLS_StyleScopedClasses['row']} */ ;
 /** @type {__VLS_StyleScopedClasses['cols-3']} */ ;
 /** @type {__VLS_StyleScopedClasses['inline']} */ ;
@@ -377,9 +351,6 @@ if (__VLS_ctx.modelValue.vehicleType === 'PHEV') {
 /** @type {__VLS_StyleScopedClasses['cols-3']} */ ;
 /** @type {__VLS_StyleScopedClasses['row']} */ ;
 /** @type {__VLS_StyleScopedClasses['cols-2']} */ ;
-/** @type {__VLS_StyleScopedClasses['subnote']} */ ;
-/** @type {__VLS_StyleScopedClasses['row']} */ ;
-/** @type {__VLS_StyleScopedClasses['cols-4']} */ ;
 /** @type {__VLS_StyleScopedClasses['row']} */ ;
 /** @type {__VLS_StyleScopedClasses['cols-4']} */ ;
 /** @type {__VLS_StyleScopedClasses['row']} */ ;
@@ -388,12 +359,13 @@ var __VLS_dollars;
 const __VLS_self = (await import('vue')).defineComponent({
     setup() {
         return {
+            ChargingMixSlider: ChargingMixSlider,
             hasUnbundled: hasUnbundled,
-            chargingSumPct: chargingSumPct,
             update: update,
             updateBundle: updateBundle,
             updateUnbundled: updateUnbundled,
             updateCharging: updateCharging,
+            updateChargingMix: updateChargingMix,
             updatePhev: updatePhev,
         };
     },

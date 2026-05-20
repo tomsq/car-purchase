@@ -21,7 +21,6 @@ export function newScenario(label = 'Nový scénář') {
         label,
         vehicleType: 'EV',
         monthlyLeaseFee: 15000,
-        leaseFeeIncludesDph: true,
         bundle: {
             insurance: true,
             maintenance: true,

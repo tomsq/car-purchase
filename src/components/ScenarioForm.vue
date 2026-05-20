@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { Scenario } from '../lib/types'
+import type { ChargingMix, Scenario } from '../lib/types'
+import ChargingMixSlider from './ChargingMixSlider.vue'
 
 const props = defineProps<{ modelValue: Scenario }>()
 const emit = defineEmits<{ (e: 'update:modelValue', v: Scenario): void }>()
@@ -8,11 +9,6 @@ const emit = defineEmits<{ (e: 'update:modelValue', v: Scenario): void }>()
 const hasUnbundled = computed(() => {
   const b = props.modelValue.bundle
   return !b.insurance || !b.maintenance || !b.tires || !b.roadTax || !b.replacementCar
-})
-
-const chargingSumPct = computed(() => {
-  const m = props.modelValue.chargingMix
-  return m.homePct + m.fvePct + m.publicAcPct + m.dcFastPct
 })
 
 function update<K extends keyof Scenario>(key: K, value: Scenario[K]) {
@@ -38,6 +34,10 @@ function updateCharging(key: keyof Scenario['chargingMix'], value: number) {
     ...props.modelValue,
     chargingMix: { ...props.modelValue.chargingMix, [key]: value },
   })
+}
+
+function updateChargingMix(mix: ChargingMix) {
+  emit('update:modelValue', { ...props.modelValue, chargingMix: mix })
 }
 
 function updatePhev(key: keyof Scenario['phev'], value: number) {
@@ -83,14 +83,11 @@ function updatePhev(key: keyof Scenario['phev'], value: number) {
       </label>
     </div>
 
-    <label class="inline" style="margin-top: 10px">
-      <input
-        type="checkbox"
-        :checked="modelValue.leaseFeeIncludesDph"
-        @change="update('leaseFeeIncludesDph', ($event.target as HTMLInputElement).checked)"
-      />
-      Splátka už zahrnuje DPH (21 %)
-    </label>
+    <div class="subnote" style="margin-top: 8px">
+      Měsíční splátka se počítá tak, jak je zadaná (bez úpravy o DPH).
+      Leasing je obvykle uváděný bez DPH, zatímco vlastní vůz a provozní
+      náklady jsou s DPH – srovnání není 1:1.
+    </div>
 
     <h3 style="margin-top: 18px">Co je v leasingu zahrnuto?</h3>
     <div class="row cols-3">
@@ -193,46 +190,16 @@ function updatePhev(key: keyof Scenario['phev'], value: number) {
           @input="update('consumptionKwhPer100km', +($event.target as HTMLInputElement).value)"
         />
       </label>
-      <div class="subnote" style="align-self: end; margin: 0 0 8px">
-        Podíl nabíjení – součet: {{ chargingSumPct }} %
-      </div>
     </div>
 
-    <div class="row cols-4" style="margin-top: 12px">
-      <label>
-        Doma ze sítě %
-        <input
-          type="number"
-          :value="modelValue.chargingMix.homePct"
-          @input="updateCharging('homePct', +($event.target as HTMLInputElement).value)"
-        />
-      </label>
-      <label>
-        Z FVE %
-        <input
-          type="number"
-          :value="modelValue.chargingMix.fvePct"
-          @input="updateCharging('fvePct', +($event.target as HTMLInputElement).value)"
-        />
-      </label>
-      <label>
-        Veřejné AC %
-        <input
-          type="number"
-          :value="modelValue.chargingMix.publicAcPct"
-          @input="updateCharging('publicAcPct', +($event.target as HTMLInputElement).value)"
-        />
-      </label>
-      <label>
-        DC rychlonabíjení %
-        <input
-          type="number"
-          :value="modelValue.chargingMix.dcFastPct"
-          @input="updateCharging('dcFastPct', +($event.target as HTMLInputElement).value)"
-        />
-      </label>
-    </div>
-    <div class="row cols-4" style="margin-top: 12px">
+    <h3 style="margin-top: 18px">Podíl nabíjení (součet vždy 100 %)</h3>
+    <ChargingMixSlider
+      :model-value="modelValue.chargingMix"
+      @update:model-value="updateChargingMix"
+    />
+
+    <h3 style="margin-top: 18px">Cena energie</h3>
+    <div class="row cols-4">
       <label>
         Doma ze sítě (Kč/kWh)
         <input
